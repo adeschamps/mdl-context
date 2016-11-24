@@ -66,7 +66,7 @@ root context render =
 {-| Apply the message, index, and container arguments to a render function.
 Instead of
 
-    Button.render Mdl (i :: index) model.mdl
+    Button.render Mdl (0 :: index) model.mdl
         [ Button.onClick Increment ]
         [ text "+" ]
 

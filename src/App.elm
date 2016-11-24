@@ -2,7 +2,7 @@ module App exposing (..)
 
 -- LOCAL
 
-import Context
+import Context exposing (child, with)
 
 
 -- EXTERNAL
@@ -14,6 +14,10 @@ import Material.Color as Color
 import Material.Scheme
 import Material.Layout as Layout
 import Material.Options as Options
+
+
+type alias Context =
+    Context.Context Material.Model Msg
 
 
 type alias Model =
@@ -59,22 +63,27 @@ view model =
             |> Material.Scheme.topWithScheme Color.Blue Color.LightGreen
 
 
+body : Context -> Model -> List (Html Msg)
 body context model =
-    [ counter (Context.child context 0) model.counterOne CounterOne
-    , counter (Context.child context 1) model.counterTwo CounterTwo
+    [ counter (child context 0) model.counterOne CounterOne
+    , counter (child context 1) model.counterTwo CounterTwo
     ]
 
 
+counter : Context -> Int -> Counter -> Html Msg
 counter context value counter =
     Options.div []
-        [ (Context.with context 0 Button.render)
-            [ Button.ripple, Button.onClick (Decrement counter) ]
-            [ text "-" ]
+        [ button (child context 0) "-" (Decrement counter)
         , value |> toString |> text
-        , (Context.with context 1 Button.render)
-            [ Button.ripple, Button.onClick (Increment counter) ]
-            [ text "+" ]
+        , button (child context 1) "+" (Increment counter)
         ]
+
+
+button : Context -> String -> Msg -> Html Msg
+button context label action =
+    (with context 0 Button.render)
+        [ Button.ripple, Button.onClick action ]
+        [ text label ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
