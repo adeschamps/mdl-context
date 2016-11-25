@@ -2,43 +2,55 @@ module Context
     exposing
         ( Context
         , init
-        , root
         , with
+        , withIndex
         , child
         )
 
 import Parts
 
 
-type alias Msg context msg =
-    Parts.Msg context msg -> msg
+type alias MsgWrapper container msg =
+    Parts.Msg container msg -> msg
 
 
-{-| Encapsulates the three arguments that are usually found together in elm-mdl.
+{-| Encapsulates the three arguments that are usually found together in elm-mdl:
+In elm-mdl apps, these are typically:
+
+- toMsg: Mdl
+- index: [ 0 ] or (i :: index) in larger apps
+- container: model.mdl
 -}
 type alias Context container msg =
-    { container : container
+    { toMsg : MsgWrapper container msg
     , index : Parts.Index (List Int)
-    , mapMessage : Msg container msg
+    , container : container
     }
 
 
-{-| Create a context record
+{-| Create a context record.
+Construct this in your main view function, NOT in your model.
+Typical usage:
+
+    view model =
+        let
+            context = Context.init Mdl model.mdl
+        in
+            ...
 -}
 init :
-    Msg container msg
+    MsgWrapper container msg
     -> container
     -> Context container msg
-init mapMessage model =
-    { container = model
+init makeMessage model =
+    { toMsg = makeMessage
     , index = []
-    , mapMessage = mapMessage
+    , container = model
     }
 
 
 {-| Apply the message and container arguments to a render function.
-Use this for the main view function, which does not take an index argument.
-For most other cases, use `with`.
+Use this for view functions that do not take an index, such as the root view function.
 
     view : Model -> Html Msg
     view model =
@@ -46,7 +58,7 @@ For most other cases, use `with`.
             context =
                 Context.init Mdl model.mdl
         in
-            (Context.root context Layout.render)
+            (Layout.render |> with context)
                 [ Layout.fixedHeader
                 ]
                 { header = []
@@ -55,15 +67,17 @@ For most other cases, use `with`.
                 , main = viewMain context model
                 }
 -}
-root :
+with :
     Context container msg
-    -> (Msg container msg -> container -> viewFunction)
+    -> (MsgWrapper container msg -> container -> viewFunction)
     -> viewFunction
-root context render =
-    render context.mapMessage context.container
+with context render =
+    render context.toMsg context.container
 
 
 {-| Apply the message, index, and container arguments to a render function.
+Use this for render functions which take an index argument, such as buttons.
+
 Instead of
 
     Button.render Mdl (0 :: index) model.mdl
@@ -72,17 +86,17 @@ Instead of
 
 it becomes
 
-    (with context 0 Button.render)
+    (Button.render |> withIndex context 0)
         [ Button.onClick Increment ]
         [ text "+" ]
 -}
-with :
+withIndex :
     Context container msg
     -> Int
-    -> (Msg container msg -> Parts.Index (List Int) -> container -> viewFunction)
+    -> (MsgWrapper container msg -> Parts.Index (List Int) -> container -> viewFunction)
     -> viewFunction
-with context i render =
-    render context.mapMessage (i :: context.index) context.container
+withIndex context i render =
+    render context.toMsg (i :: context.index) context.container
 
 
 {-| Create a context for passing to a child component.
