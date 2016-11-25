@@ -39,7 +39,7 @@ type alias MsgWrapper container msg =
     Parts.Msg container msg -> msg
 
 
-{-| Encapsulates the three arguments that are usually found together in elm-mdl:
+{-| Encapsulates the three arguments that are usually found together in elm-mdl.
 In elm-mdl apps, these are typically:
 
 - toMsg: Mdl
