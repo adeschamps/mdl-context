@@ -26,6 +26,9 @@ This becomes
         Button.render Mdl (0 :: index) model.mdl
             [ Button.onClick Increment ]
             [ text "Add" ]
+
+@docs Context, init, with, withIndex, child
+
 -}
 
 import Parts
