@@ -2,7 +2,7 @@ module App exposing (..)
 
 -- LOCAL
 
-import Context exposing (child, with)
+import Context exposing (child, with, withIndex)
 
 
 -- EXTERNAL
@@ -52,7 +52,7 @@ view model =
         context =
             Context.init Mdl model.mdl
     in
-        (Context.root context Layout.render)
+        (Layout.render |> with context)
             [ Layout.fixedHeader
             ]
             { header = []
@@ -65,13 +65,13 @@ view model =
 
 body : Context -> Model -> List (Html Msg)
 body context model =
-    [ counter (child context 0) model.counterOne CounterOne
-    , counter (child context 1) model.counterTwo CounterTwo
+    [ viewCounter (child context 0) model.counterOne CounterOne
+    , viewCounter (child context 1) model.counterTwo CounterTwo
     ]
 
 
-counter : Context -> Int -> Counter -> Html Msg
-counter context value counter =
+viewCounter : Context -> Int -> Counter -> Html Msg
+viewCounter context value counter =
     Options.div []
         [ button (child context 0) "-" (Decrement counter)
         , value |> toString |> text
@@ -81,7 +81,7 @@ counter context value counter =
 
 button : Context -> String -> Msg -> Html Msg
 button context label action =
-    (with context 0 Button.render)
+    (Button.render |> withIndex context 0)
         [ Button.ripple, Button.onClick action ]
         [ text label ]
 
