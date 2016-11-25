@@ -21,8 +21,9 @@ viewButton context model =
         [ text "Add" ]
 ```
 
-Usage:
+There is a simple example with a couple of counters:
 
 ```bash
-$ elm-make src/App.elm
+$ cd example
+$ elm-make App.elm
 ```
