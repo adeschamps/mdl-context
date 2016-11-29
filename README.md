@@ -16,7 +16,6 @@ This becomes
 ```elm
 viewButton context model =
     (Button.render |> with context)
-    Button.render Mdl (0 :: index) model.mdl
         [ Button.onClick Increment ]
         [ text "Add" ]
 ```
