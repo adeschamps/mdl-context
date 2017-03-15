@@ -82,7 +82,7 @@ viewCounter context value counter =
 button : Context -> String -> Msg -> Html Msg
 button context label action =
     (Button.render |> withIndex context 0)
-        [ Button.ripple, Button.onClick action ]
+        [ Button.ripple, Options.onClick action ]
         [ text label ]
 
 
@@ -106,7 +106,7 @@ update msg model =
                     { model | counterTwo = model.counterTwo - 1 } ! []
 
         Mdl mdlMsg ->
-            Material.update mdlMsg model
+            Material.update Mdl mdlMsg model
 
 
 main : Program Never Model Msg

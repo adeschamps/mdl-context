@@ -32,11 +32,11 @@ This becomes
 
 -}
 
-import Parts
+import Material
 
 
-type alias MsgWrapper container msg =
-    Parts.Msg container msg -> msg
+type alias MsgWrapper msg =
+    Material.Msg msg -> msg
 
 
 {-| Encapsulates the three arguments that are usually found together in elm-mdl.
@@ -47,8 +47,8 @@ In elm-mdl apps, these are typically:
 - container: model.mdl
 -}
 type alias Context container msg =
-    { toMsg : MsgWrapper container msg
-    , index : Parts.Index (List Int)
+    { toMsg : MsgWrapper msg
+    , index : List Int
     , container : container
     }
 
@@ -64,7 +64,7 @@ Typical usage:
             ...
 -}
 init :
-    MsgWrapper container msg
+    MsgWrapper msg
     -> container
     -> Context container msg
 init makeMessage model =
@@ -94,7 +94,7 @@ Use this for view functions that do not take an index, such as the root view fun
 -}
 with :
     Context container msg
-    -> (MsgWrapper container msg -> container -> viewFunction)
+    -> (MsgWrapper msg -> container -> viewFunction)
     -> viewFunction
 with context render =
     render context.toMsg context.container
@@ -118,7 +118,7 @@ it becomes
 withIndex :
     Context container msg
     -> Int
-    -> (MsgWrapper container msg -> Parts.Index (List Int) -> container -> viewFunction)
+    -> (MsgWrapper msg -> List Int -> container -> viewFunction)
     -> viewFunction
 withIndex context i render =
     render context.toMsg (i :: context.index) context.container
