@@ -7,17 +7,18 @@ module Context
         , child
         )
 
-{-|
-A collection of helpers for dealing with elm-mdl render functions.
+{-| A collection of helpers for dealing with elm-mdl render functions.
 This is motivated by the following observations:
 
-- The triplet of `Mdl index model.mdl` occurs frequently in elm-mdl.
-- Dealing with indices is a bit tedious.
+  - The triplet of `Mdl index model.mdl` occurs frequently in elm-mdl.
+  - Dealing with indices is a bit tedious.
 
 Instead of
 
     viewButton model index =
-        Button.render Mdl (0 :: index) model.mdl
+        Button.render Mdl
+            (0 :: index)
+            model.mdl
             [ Button.onClick Increment ]
             [ text "Add" ]
 
@@ -42,9 +43,10 @@ type alias MsgWrapper msg =
 {-| Encapsulates the three arguments that are usually found together in elm-mdl.
 In elm-mdl apps, these are typically:
 
-- toMsg: Mdl
-- index: [ 0 ] or (i :: index) in larger apps
-- container: model.mdl
+  - toMsg: Mdl
+  - index: [ 0 ] or (i :: index) in larger apps
+  - container: model.mdl
+
 -}
 type alias Context container msg =
     { toMsg : MsgWrapper msg
@@ -62,6 +64,7 @@ Typical usage:
             context = Context.init Mdl model.mdl
         in
             ...
+
 -}
 init :
     MsgWrapper msg
@@ -91,6 +94,7 @@ Use this for view functions that do not take an index, such as the root view fun
                 , tabs = ( [], [] )
                 , main = viewMain context model
                 }
+
 -}
 with :
     Context container msg
@@ -114,6 +118,7 @@ it becomes
     (Button.render |> withIndex context 0)
         [ Button.onClick Increment ]
         [ text "+" ]
+
 -}
 withIndex :
     Context container msg
