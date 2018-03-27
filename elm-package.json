@@ -1,5 +1,5 @@
 {
-    "version": "1.0.2",
+    "version": "2.0.0",
     "summary": "Helpers for working with elm-mdl render functions",
     "repository": "https://github.com/adeschamps/mdl-context.git",
     "license": "BSD3",
